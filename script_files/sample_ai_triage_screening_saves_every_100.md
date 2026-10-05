@@ -108,7 +108,8 @@ for i in tqdm(range(0, total_records, API_BATCH_SIZE), desc=f"Triaging Codes (Ba
 
     prompt = f"""
 You are an expert clinical epidemiologist triaging primary care electronic health record codes for a birth cohort study of long-term health conditions.
-
+OPERATING PRINCIPLE: DELIBERATELY INCLUSIVE / HIGH-SENSITIVITY SCREENING
+Your primary objective is to MINIMIZE FALSE NEGATIVES. Ascertainment must be inclusive:
 - Admit close proxy markers of a condition and acute presentations carrying recognized risk of long-term sequelae.
 - Inherent chronicity: Psychosis, bipolar disorder, cancer, diabetes, epilepsy, cerebral palsy, congenital anomalies, asthma, and chronic systemic illnesses.
 - ALL mental health conditions, chronic symptoms, and psychiatric medications MUST be retained as long-term conditions.
