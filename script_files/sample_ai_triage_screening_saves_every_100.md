@@ -1,3 +1,11 @@
+## Reproducible Sample Script
+This script provides a self-contained, reproducible sample of the LLM clinical code triage pipeline configured on a validation set of 500 candidate EHR terms.
+#**Note on Environment & Production Differences:**  
+# This script is a demonstration harness and does not represent the exact infrastructure used during full-scale cohort derivation:
+# - **Checkpointing:** Checkpoints every 100 items (the full production script processed ~75,000 codes and saved in batches of 1,000).
+# - **Encoding & parsing:** Enhanced with `latin1` fallback decoding and strict string casting to prevent character-map errors and numeric ID truncation across different operating systems and Workbench setups.
+# - **API & runtime:** Configured for the standalone Google GenAI SDK; production execution occurred within a secured Google Cloud Vertex AI Workbench running earlier runtime and model versions.
+
 import json
 import os
 import time
@@ -6,18 +14,16 @@ from google import genai
 from google.genai import types
 from tqdm import tqdm
 
-# =====================================================================
 # 1. SETUP & AUTHENTICATION
-# =====================================================================
+
 PROJECT_ID = "INSERT"
 LOCATION = "global"
 MODEL_ID = "gemini-3.1-flash-lite"
 
 client = genai.Client(vertexai=True, project=PROJECT_ID, location=LOCATION)
 
-# =====================================================================
 # 2. LOAD DATA
-# =====================================================================
+
 print("Loading datasets...")
 
 input_file = "test_500_codes.csv" #insert your codes
@@ -46,9 +52,8 @@ records = df_unique_codes.to_dict('records')
 total_records = len(records)
 print(f"Loaded {len(df_target)} total rows from {input_file} ({total_records} unique codes to classify).")
 
-# =====================================================================
 # 3. DEFINE STRICT JSON SCHEMA (Calibrated for High Sensitivity)
-# =====================================================================
+=
 response_schema = {
     "type": "ARRAY",
     "description": "Array of high-sensitivity triage classifications corresponding exactly to the input batch.",
@@ -92,9 +97,9 @@ response_schema = {
     }
 }
 
-# =====================================================================
+
 # 4. BATCHED SCREENING PIPELINE
-# =====================================================================
+
 API_BATCH_SIZE = 20
 SAVE_CHUNK_SIZE = 100
 results = []
